@@ -14,15 +14,16 @@ object Chapter3 extends App{
     * Answer is 3 as 1 + 2 == 3
     *
     * Proof of Result is in Tests
+    *
+    * val result = List(1,2,3,4,5) match {
+    *    case Cons(x, Cons(2, Cons(4, _))) => x
+    *    case Nil => 42
+    *    case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
+    *    //   Cons(1, Cons(2, Cons(3, Cons(4, _)))) => 1 + 2
+    *    case Cons(h, t) => h + sum(t)
+    *    case _ => 101
+    *  }
     */
-  val result = List(1,2,3,4,5) match {
-    case Cons(x, Cons(2, Cons(4, _))) => x
-    case Nil => 42
-    case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
-    //   Cons(1, Cons(2, Cons(3, Cons(4, _)))) => 1 + 2
-    case Cons(h, t) => h + sum(t)
-    case _ => 101
-  }
 
   /**
     * Exercise 3.2 - 3.6 Are Implemented In List.scala

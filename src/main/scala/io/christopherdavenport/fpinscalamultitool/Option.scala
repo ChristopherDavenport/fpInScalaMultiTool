@@ -17,4 +17,6 @@ case object None extends Option[Nothing]
 
 object Option{
 
+  def apply[A](v: A): Option[A] = Some(v)
+
 }

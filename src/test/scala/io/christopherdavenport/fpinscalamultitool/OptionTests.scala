@@ -11,6 +11,16 @@ import io.christopherdavenport.fpinscalamultitool.{None => none}
   */
 class OptionTests extends FlatSpec with Matchers{
 
+  "apply" should "create a some if there is a value" in {
+    val i = 1
+    Option(i) should be (some(1))
+  }
+
+  it should "create a none with a null" in {
+    val i = null
+    Option(i) should be (None)
+  }
+
   "map" should "return an option changed by a function" in {
     val f: Int => Int = _ + 1
     val o = some(1)

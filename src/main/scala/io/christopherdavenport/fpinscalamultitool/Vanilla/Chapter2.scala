@@ -122,5 +122,4 @@ object Chapter2 extends App{
     */
   def compose[A,B,C](f: B => C, g: A => B): A => C = (a: A) => f(g(a))
 
-  println( List(1,2,3,4,5).scanLeft(0)(_ + _) )
 }

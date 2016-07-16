@@ -82,14 +82,24 @@ class ListTests extends FlatSpec with Matchers{
     l.dropWhile(f) should be (Nil)
   }
 
-  "init" should "remove the last element from a list" in {
+  "init" should "remove the last element from a list from the list" in {
     val l = List(1,2,3,4)
     l.init should be (List(1,2,3))
   }
 
   it should "return Nil if the original list was Nil" in {
     val l: List[Int] = Nil
-    l.init should be (Nil)
+    List.init(l) should be (Nil)
+  }
+
+  it should "return nil with a single element" in {
+    val l  = List(1)
+    List.init(l) should be (Nil)
+  }
+
+  it should "remove the last element from a list" in {
+    val l = List(1,2,3,4)
+    List.init(l) should be (List(1,2,3))
   }
 
   "foldRight" should "return the same list if passed Nil and Cons" in {
@@ -110,7 +120,7 @@ class ListTests extends FlatSpec with Matchers{
 
   it should "return 0 for an empty list" in {
     val l : List[Int] = Nil
-    l.length should be (0)
+    List.length(l) should be (0)
   }
 
   "sum" should "return the sum of a list" in {
@@ -169,6 +179,12 @@ class ListTests extends FlatSpec with Matchers{
     appendViaFoldLeft(l1, l2) should be (List(1,2,3,4,5))
   }
 
+  it should "apply from the List" in {
+    val l1 = List(1,2,3)
+    val l2 = List(4, 5)
+    l1.append(l2) should be (List(1,2,3,4,5))
+  }
+
   "concatenateToSingleList" should "combine a list of lists to a single list" in {
     val l1 = List(1, 2)
     val l2 = List(3, 4)
@@ -223,6 +239,12 @@ class ListTests extends FlatSpec with Matchers{
     flatMap(l)(f) should be (List(1,1,2,2,3,3))
   }
 
+  it should "do the same with the list" in {
+    val l = List(1,2,3)
+    val f : (Int => List[Int]) = (i: Int) => List(i, i)
+    l.flatMap(f) should be (List(1,1,2,2,3,3))
+  }
+
   "filterViaFlatMap" should "remove elements that do not fit a predicate" in {
     val l = List(1,2,3,4,5)
     val f: (Int => Boolean) = _ >= 3
@@ -256,7 +278,7 @@ class ListTests extends FlatSpec with Matchers{
   it should "only zip to the length of the shorter of the two lists" in {
     val l1 = List(1,2,3,4,5,6,7)
     val l2 = List("I", "am", "awesome!")
-    zip(l1, l2) should be (List((1, "I"), (2, "am"), (3, "awesome!")))
+    l1.zip(l2) should be (List((1, "I"), (2, "am"), (3, "awesome!")))
   }
 
   "zipWith" should "be able to add all elements in lists of integers" in {
@@ -270,7 +292,7 @@ class ListTests extends FlatSpec with Matchers{
     val l1 = List(1.0, 2.0, 3.0)
     val l2 = List(4, 5, 6)
     val f : (Double, Int) => String = (d: Double, i: Int) =>  s"${(d.toInt * i).toString}!"
-    zipWith(l1, l2)(f) should be (List("4!", "10!", "18!"))
+    l1.zipWith(l2)(f) should be (List("4!", "10!", "18!"))
   }
 
   "take" should "only take the number of elements indicated from the list" in {
@@ -298,6 +320,12 @@ class ListTests extends FlatSpec with Matchers{
     val l1 = List(1,2,3,4,5)
     val p : (Int => Boolean) = _ > 5
     takeWhile(l1)(p) should be (List[Int]())
+  }
+
+  it should "return the original list if they all satisfy the predicate" in {
+    val l1 = List(1,2,3,4,5)
+    val p : (Int => Boolean) = _ < 10
+    l1.takeWhile(p) should be (List(1,2,3,4,5))
   }
 
   "forall" should "return true if all elements match a predicate" in {
@@ -378,6 +406,17 @@ class ListTests extends FlatSpec with Matchers{
     val l1 = List(1,2,3,4,5)
     val l2 = List(3,4)
     hasSubsequence(l1)(l2) should be (true)
+  }
+
+  "::" should "add a new element to a list" in {
+    val l = List(1, 2, 3)
+    1 :: l should be (List(1, 1,2,3))
+  }
+
+  ":::" should "append two lists together" in {
+    val l1 = List(1,2,3)
+    val l2 = List(4,5,6)
+    l1 ::: l2 should be (List(1,2,3,4,5,6))
   }
 
 }

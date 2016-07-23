@@ -1,6 +1,6 @@
-package io.christopherdavenport.fpinscalamultitool.Vanilla
+package fpinscalamulti.Vanilla
 
-import io.christopherdavenport.fpinscalamultitool.Vanilla.Chapter2._
+import fpinscalamulti.Vanilla.Chapter2._
 import org.scalatest.{FlatSpec, Matchers}
 /**
   * Created by davenpcm on 7/2/16.

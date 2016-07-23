@@ -1,10 +1,9 @@
-package io.christopherdavenport.fpinscalamultitool
+package fpinscalamulti
 
 import org.scalatest.{FlatSpec, Matchers}
-import io.christopherdavenport.fpinscalamultitool.{Option => option}
-import io.christopherdavenport.fpinscalamultitool.{Some => some}
-import io.christopherdavenport.fpinscalamultitool.{None => none}
-
+import fpinscalamulti.{Option => option}
+import fpinscalamulti.{Some => some}
+import fpinscalamulti.{None => none}
 
 /**
   * Created by davenpcm on 7/5/16.

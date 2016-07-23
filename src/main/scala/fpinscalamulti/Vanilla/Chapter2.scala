@@ -1,4 +1,4 @@
-package io.christopherdavenport.fpinscalamultitool.Vanilla
+package fpinscalamulti.Vanilla
 
 import scala.annotation.tailrec
 

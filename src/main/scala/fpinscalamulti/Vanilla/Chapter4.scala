@@ -1,4 +1,4 @@
-package io.christopherdavenport.fpinscalamultitool.Vanilla
+package fpinscalamulti.Vanilla
 
 /**
   * Created by davenpcm on 7/4/16.

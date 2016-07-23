@@ -1,6 +1,4 @@
-package io.christopherdavenport.fpinscalamultitool
-
-import scala.annotation.tailrec
+package fpinscalamulti
 
 /**
   * Created by davenpcm on 7/4/16.

@@ -1,7 +1,5 @@
-package io.christopherdavenport.fpinscalamultitool.Vanilla
+package fpinscalamulti.Vanilla
 
-import io.christopherdavenport.fpinscalamultitool.List._
-import io.christopherdavenport.fpinscalamultitool.{Cons, List, Nil}
 /**
   * Created by davenpcm on 7/3/16.
   */

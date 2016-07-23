@@ -46,7 +46,7 @@ object List {
     * @return A List of Type A with a Nil in the furthest tail position
     */
   def apply[A](as: A*): List[A] = as match {
-    case empty if as.isEmpty => Nil
+    case empty if empty.isEmpty => Nil
     case _ => Cons(as.head, apply(as.tail: _*))
   }
 
@@ -293,7 +293,7 @@ object List {
     * @return A single List[A]
     */
   def concatenateToSingleList[A](ls: List[List[A]]): List[A] = {
-    foldRightViaFoldLeft(ls)(List[A]())(appendViaFoldLeft(_, _))
+    foldRightViaFoldLeft(ls)(List[A]())(appendViaFoldLeft)
   }
 
   /**

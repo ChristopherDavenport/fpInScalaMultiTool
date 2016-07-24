@@ -148,5 +148,20 @@ class OptionTests extends FlatSpec with Matchers{
     Option.traverse(list)(f) should be (None)
   }
 
+  "sequenceViaTraverse" should "return Some list if all the Options are defined" in {
+    val oList = List(Some(1), Some(2), Some(3), Some(4))
+    Option.sequenceViaTraverse(oList) should be (Some(List(1,2,3,4)))
+  }
+
+  it should "return None if one of the Options is not" in {
+    val oList = List(Some(1), Some(2), None, Some(4))
+    Option.sequenceViaTraverse(oList) should be (None)
+  }
+
+  it should "return Some empty list if the List is Empty" in {
+    val oList = List[Option[Int]]()
+    Option.sequenceViaTraverse(oList) should be (Some(List[Int]()))
+  }
+
 
 }

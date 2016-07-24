@@ -81,4 +81,17 @@ class OptionTests extends FlatSpec with Matchers{
     o.filter(f) should be (None)
   }
 
+  "lift" should "elevate a function to work on options" in {
+    val f : Int => Int = _ + 1
+    val o = some(2)
+    option.lift(f)(o) should be (some(3))
+  }
+
+  "map2" should "return the option returned from the combination of 2 options" in {
+    val f : (Int, Int) => Int = _ + _
+    val o1 = some(2)
+    val o2 = some(5)
+    option.map2(o1, o2)(f) should be (some(7))
+  }
+
 }

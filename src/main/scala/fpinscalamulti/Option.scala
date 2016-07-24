@@ -60,6 +60,9 @@ trait Option[+A] {
     */
   def filter(f: A => Boolean): Option[A] = flatMap(a => if (f(a)) Some(a) else None)
 
+
+
+
 }
 
 case class Some[+A](get: A) extends Option[A]
@@ -68,5 +71,40 @@ case object None extends Option[Nothing]
 object Option{
 
   def apply[A](v: A): Option[A] = if (v != null) { Some(v) } else None
+
+  /**
+    * Lift returns a function which maps None to None and applies f to the contents of Some.
+    * f need not be aware of the Option type at all.
+    * @param f The function to lift to operate on Options
+    * @tparam A The original type and the type of the intake of the function
+    * @tparam B The transformed type, the return type of the function
+    * @return A function which transforms an option to another option
+    */
+  def lift[A,B](f: A => B): Option[A] => Option[B] = _ map f
+
+  /**
+    * Exercise 4.3
+    * This takes two option values and a function that takes the internal type of
+    * those two options and combines them to single option in the output.
+    *
+    * This is syntactic sugar for a.flatmap( case va => b.map( case vb => f(va, vb)))
+    *
+    * Since it uses flatmap on the first it removes the extra layer of Option that might
+    * have been created and the second option maps to the final option that is returned.
+    *
+    * @param a The first option
+    * @param b The second option
+    * @param f The transformation function of the internal types
+    * @tparam A The Type of th First Option and the first operand
+    * @tparam B The Type of the Second Option and the second operand
+    * @tparam C The internal type of the final option
+    * @return An option of type C
+    */
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    for {
+      va <- a
+      vb <- b
+    } yield f(va, vb)
+  }
 
 }

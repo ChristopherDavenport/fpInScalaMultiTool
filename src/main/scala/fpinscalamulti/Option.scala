@@ -60,6 +60,22 @@ trait Option[+A] {
     */
   def filter(f: A => Boolean): Option[A] = flatMap(a => if (f(a)) Some(a) else None)
 
+  /**
+    * Returns whether the option is currently defined.
+    * @return A Boolean representing whether the option is in the Some state or the None state
+    */
+  def isDefined: Boolean = this match {
+    case Some(a) => true
+    case None => false
+  }
+
+  /**
+    * Returns whether the option is currently Empty. As there are 2 states if it is defined it is
+    * empty why it is not defined.
+    * @return A Boolean representing whether the Option is currently None
+    */
+  def isEmpty: Boolean = !isDefined
+
 
 
 
@@ -106,5 +122,22 @@ object Option{
       vb <- b
     } yield f(va, vb)
   }
+
+//  def sequenceWeak[A](a: List[Option[A]]): Option[List[A]] = {
+//    if (a.forall(_.isDefined)) Some(a.map(_.getOrElse(new A))) else None
+//  }
+
+  /**
+    * Exercise 4.4
+    * Infinite Mapping to Create an Option Around a Map and If any are Not defined the next call will
+    * change the sequence from Some to None
+    * @param a This list of Options
+    * @tparam A the type of the Options
+    * @return An Option of a List of A
+    */
+  def sequence[A](a: List[Option[A]]): Option[List[A]] =
+    a.foldRight[Option[List[A]]](Some(Nil))((x,y) => map2(x, y)(_ :: _))
+
+
 
 }

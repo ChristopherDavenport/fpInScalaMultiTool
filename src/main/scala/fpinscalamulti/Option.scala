@@ -60,6 +60,25 @@ trait Option[+A] {
     */
   def filter(f: A => Boolean): Option[A] = flatMap(a => if (f(a)) Some(a) else None)
 
+  /**
+    * Returns whether the option is currently defined.
+    * @return A Boolean representing whether the option is in the Some state or the None state
+    */
+  def isDefined: Boolean = this match {
+    case Some(a) => true
+    case None => false
+  }
+
+  /**
+    * Returns whether the option is currently Empty. As there are 2 states if it is defined it is
+    * empty why it is not defined.
+    * @return A Boolean representing whether the Option is currently None
+    */
+  def isEmpty: Boolean = !isDefined
+
+
+
+
 }
 
 case class Some[+A](get: A) extends Option[A]
@@ -68,5 +87,95 @@ case object None extends Option[Nothing]
 object Option{
 
   def apply[A](v: A): Option[A] = if (v != null) { Some(v) } else None
+
+  /**
+    * Lift returns a function which maps None to None and applies f to the contents of Some.
+    * f need not be aware of the Option type at all.
+    * @param f The function to lift to operate on Options
+    * @tparam A The original type and the type of the intake of the function
+    * @tparam B The transformed type, the return type of the function
+    * @return A function which transforms an option to another option
+    */
+  def lift[A,B](f: A => B): Option[A] => Option[B] = _ map f
+
+  /**
+    * Exercise 4.3
+    * This takes two option values and a function that takes the internal type of
+    * those two options and combines them to single option in the output.
+    *
+    * This is syntactic sugar for a.flatmap( case va => b.map( case vb => f(va, vb)))
+    *
+    * Since it uses flatmap on the first it removes the extra layer of Option that might
+    * have been created and the second option maps to the final option that is returned.
+    *
+    * @param a The first option
+    * @param b The second option
+    * @param f The transformation function of the internal types
+    * @tparam A The Type of th First Option and the first operand
+    * @tparam B The Type of the Second Option and the second operand
+    * @tparam C The internal type of the final option
+    * @return An option of type C
+    */
+  def map2[A,B,C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    for {
+      va <- a
+      vb <- b
+    } yield f(va, vb)
+  }
+
+//  def sequenceWeak[A](a: List[Option[A]]): Option[List[A]] = {
+//    if (a.forall(_.isDefined)) Some(a.map(_.getOrElse(new A))) else None
+//  }
+
+  /**
+    * Exercise 4.4
+    * Infinite Mapping to Create an Option Around a Map and If any are Not defined the next call will
+    * change the sequence from Some to None
+    * @param a This list of Options
+    * @tparam A the type of the Options
+    * @return An Option of a List of A
+    */
+  def sequence[A](a: List[Option[A]]): Option[List[A]] =
+    a.foldRight[Option[List[A]]](Some(Nil))((x,y) => map2(x, y)(_ :: _))
+
+  /**
+    * Exercise 4.5 Part 1 - Create a function which only looks at the list once and generate an option
+    * of a list of B
+    *
+    * The idea is that via foldRight with initiate the new loop and as we map2 accross the list if any of them
+    * through the function go to none then the entire List will return none
+    *
+    * @param a The original list
+    * @param f the Transformation function
+    * @tparam A The Type of the Original List
+    * @tparam B A function which can fail
+    * @return An Option of a List of B
+    */
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    a.foldRight(Some(Nil): Option[List[B]])((x,y) => map2(f(x), y)(_ :: _))
+
+  /**
+    * Exercise 4.5 Part 2 - Reimplement sequence via traverse
+    *
+    * This is actually a much more elegant solution because while they are essentially the same it means
+    * logic is fully consolidated to traverse needs to hold the testing.
+    *
+    * @param a The initial list
+    * @tparam A the type of the Options
+    * @return An option of a List of A
+    */
+  def sequenceViaTraverse[A](a: List[Option[A]]): Option[List[A]] =
+    traverse(a)(identity)
+
+  /**
+    * Generic Function to convert an exception-based APU to an Option-oriented API
+    * @param a The value to move to an Option
+    * @tparam A the type going to and the type of the final option
+    * @return If Any exceptions occur go to None
+    */
+  def Try[A](a: => A): Option[A] =
+    try Some(a)
+    catch { case e : Exception => None}
+
 
 }

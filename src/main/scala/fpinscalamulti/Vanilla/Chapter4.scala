@@ -24,4 +24,13 @@ object Chapter4 {
       Some(variance)
     }
 
+  /**
+    * Exercise 4.8
+    *
+    * Map2 is only able to report 1 error as it proliferates, however if map2 returns a List of errors.
+    * rather than a single it would allows them to accumulate if we had a function that could map over the left hand
+    * sides with flatmap and continue to add to the list if it went left otherwise not.
+    *
+    */
+
 }

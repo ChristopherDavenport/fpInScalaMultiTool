@@ -35,7 +35,7 @@ class EitherTests extends FlatSpec with Matchers{
   it should "return Left if an exception is thrown" in {
     val s = "yellow"
     lazy val shared = new Exception("TestException")
-    val fError : String => Int = (s) => throw shared
+    val fError : String => Int = _ => throw shared
     Either.Try(fError(s)) should be (Left(shared))
   }
 
@@ -49,7 +49,7 @@ class EitherTests extends FlatSpec with Matchers{
     val s = "yellow"
     val f : Int => Int = _ + 1
     lazy val shared = new Exception("TestException")
-    val fError : String => Int = (s) => throw shared
+    val fError : String => Int = _ => throw shared
     Either.Try(fError(s)).map(f) should be (Left(shared))
   }
 
@@ -104,6 +104,28 @@ class EitherTests extends FlatSpec with Matchers{
     val e2: Either[String, Int] = Left("Bad 2 - Don't Get Me!")
     val f : (Int, Int) => Int = _ + _
     e1.map2(e2)(f) should be (Left("Bad"))
+  }
+
+  "traverse" should "return a right of a list from a function that goes to an either" in {
+    val l = List("1", "2", "3")
+    val f : String => Either[Exception, Int] = s => Either.Try(s.toInt)
+    Either.traverse(l)(f) should be (Right(List(1,2,3)))
+  }
+
+  it should "return the left if any go to left" in {
+    val l = List(1,2,3,4)
+    val f : Int => Either[String, Int] = i => if (i==2) Left("No Twos") else Right(i)
+    Either.traverse(l)(f) should be (Left("No Twos"))
+  }
+
+  "sequence" should "return the List if all are Right" in {
+    val l = List(Right(1), Right(2), Right(3))
+    Either.sequence(l) should be (Right(List(1,2,3)))
+  }
+
+  it should "return the left if any is left" in {
+    val l = List(Right(1), Left("Monkey"), Right(3))
+    Either.sequence(l) should be (Left("Monkey"))
   }
 
 }

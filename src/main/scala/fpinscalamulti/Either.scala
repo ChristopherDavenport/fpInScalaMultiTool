@@ -85,11 +85,7 @@ sealed trait Either[+E, +A]{
     *         between the two with the Left of the first value erasing the information of the Left information
     *         of the second.
     */
-  def map2[EE >: E, B, C](that: Either[EE, B])(f: (A, B) => C): Either[EE, C] = for {
-    value <- this
-    otherValue <- that
-  } yield f(value, otherValue)
-
+  def map2[EE >: E, B, C](that: Either[EE, B])(f: (A, B) => C): Either[EE, C] = Either.map2(this, that)(f)
 }
 case class Left[+E](value: E) extends Either[E, Nothing]
 case class Right[+A](value: A) extends Either[Nothing, A]
@@ -99,4 +95,38 @@ object Either{
   def Try[A](a: => A): Either[Exception, A] =
     try Right(a)
     catch { case e: Exception => Left(e)}
+
+  def map2[E, EE >: E, A, B, C](e1: Either[E, A], e2: Either[EE, B])(f: (A, B) => C): Either[EE, C] =
+    for {
+      value <- e1
+      otherValue <- e2
+    } yield f(value, otherValue)
+
+  /**
+    * Exercise 4.7
+    * The generic traverse method takes a list and a function which goes to an Either and Returns an either of the
+    * list or E
+    * @param as The List to traverse
+    * @param f the function which takes a value of the list to an either
+    * @tparam E The type of the Left
+    * @tparam A The type of the Original List
+    * @tparam B The type of the final List
+    * @return either a Left of E or a Right of B
+    */
+  def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
+    as.foldRight(Right(Nil): Either[E, List[B]])((x,y) => map2(f(x), y)(_ :: _))
+
+  /**
+    * Exercise 4.7
+    *
+    * This is traverse where we take the identity of the original list as the Either we are mapping of
+    *
+    * @param es A list of Eithers
+    * @tparam E The type of the Left
+    * @tparam A The type of the Right, an the List in the Return
+    * @return Either E or a List of A
+    */
+  def sequence[E, A](es: List[Either[E, A]]): Either[E, List[A]] =
+    traverse(es)(identity)
+
 }

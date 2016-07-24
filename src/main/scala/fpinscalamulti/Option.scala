@@ -138,6 +138,44 @@ object Option{
   def sequence[A](a: List[Option[A]]): Option[List[A]] =
     a.foldRight[Option[List[A]]](Some(Nil))((x,y) => map2(x, y)(_ :: _))
 
+  /**
+    * Exercise 4.5 Part 1 - Create a function which only looks at the list once and generate an option
+    * of a list of B
+    *
+    * The idea is that via foldRight with initiate the new loop and as we map2 accross the list if any of them
+    * through the function go to none then the entire List will return none
+    *
+    * @param a The original list
+    * @param f the Transformation function
+    * @tparam A The Type of the Original List
+    * @tparam B A function which can fail
+    * @return An Option of a List of B
+    */
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
+    a.foldRight(Some(Nil): Option[List[B]])((x,y) => map2(f(x), y)(_ :: _))
+
+  /**
+    * Exercise 4.5 Part 2 - Reimplement sequence via traverse
+    *
+    * This is actually a much more elegant solution because while they are essentially the same it means
+    * logic is fully consolidated to traverse needs to hold the testing.
+    *
+    * @param a The initial list
+    * @tparam A the type of the Options
+    * @return An option of a List of A
+    */
+  def sequenceViaTraverse[A](a: List[Option[A]]): Option[List[A]] =
+    traverse(a)(identity)
+
+  /**
+    * Generic Function to convert an exception-based APU to an Option-oriented API
+    * @param a The value to move to an Option
+    * @tparam A the type going to and the type of the final option
+    * @return If Any exceptions occur go to None
+    */
+  def Try[A](a: => A): Option[A] =
+    try Some(a)
+    catch { case e : Exception => None}
 
 
 }

@@ -126,5 +126,27 @@ class OptionTests extends FlatSpec with Matchers{
     Option.sequence(oList) should be (Some(List[Int]()))
   }
 
+  "Try" should "return some if No exception is thrown" in {
+    val i = 1
+    Option.Try(i) should be (Some(1))
+  }
+
+  it should "return None if an exception is thrown" in {
+    val s = "yellow"
+    Option.Try(s.toInt) should be (None)
+  }
+
+  "traverse" should "take an option that can fail and return some if all pass" in {
+    val list = List("1", "2", "3")
+    val f : String => Option[Int] = (s) => Option.Try(s.toInt)
+    Option.traverse(list)(f) should be (Some(List(1,2,3)))
+  }
+
+  it should "return None if any of the values fail to parse" in {
+    val list = List("1", "2", "cockadoodledoo", "3")
+    val f : String => Option[Int] = (s) => Option.Try(s.toInt)
+    Option.traverse(list)(f) should be (None)
+  }
+
 
 }

@@ -1,4 +1,4 @@
-package fpinscalamulti.Vanilla
+package fpinscalamulti.Vanilla.datastructures
 
 import scala.annotation.tailrec
 

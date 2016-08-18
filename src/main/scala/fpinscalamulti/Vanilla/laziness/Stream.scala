@@ -1,4 +1,4 @@
-package fpinscalamulti
+package fpinscalamulti.Vanilla.laziness
 
 /**
   * Created by davenpcm on 7/24/16.
@@ -10,7 +10,7 @@ trait Stream[+A] {
     */
   def headOption: Option[A] = this match {
     case Empty => None
-    case Con(h, t) => Some(h())
+    case Cons(h, t) => Some(h())
   }
 
   /**
@@ -19,7 +19,7 @@ trait Stream[+A] {
     * @return A list of Type A
     */
   def toList: List[A] = this match {
-    case Con(h, t) =>
+    case Cons(h, t) =>
       val head = h()
       val tail = t()
       head :: tail.toList
@@ -30,7 +30,7 @@ trait Stream[+A] {
 }
 
 case object Empty extends Stream[Nothing]
-case class Con[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
+case class Cons[+A](h: () => A, t: () => Stream[A]) extends Stream[A]
 
 object Stream {
 
@@ -41,10 +41,10 @@ object Stream {
     * @tparam A The type of the stream
     * @return A nonempty stream.
     */
-  def con[A](hd: => A, tl: => Stream[A]): Stream[A] = {
+  def cons[A](hd: => A, tl: => Stream[A]): Stream[A] = {
     lazy val head = hd
     lazy val tail = tl
-    Con(() => head, () => tail)
+    Cons(() => head, () => tail)
   }
 
   /**
@@ -63,6 +63,6 @@ object Stream {
     * @return A Stream of type A
     */
   def apply[A](as: A*): Stream[A] =
-    if (as.isEmpty) empty else con(as.head, apply(as.tail: _*))
+    if (as.isEmpty) empty else cons(as.head, apply(as.tail: _*))
 
 }

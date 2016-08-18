@@ -1,4 +1,6 @@
-package fpinscalamulti
+package fpinscalamulti.Vanilla.errorhandling
+
+
 
 /**
   * Created by davenpcm on 7/24/16.
@@ -114,7 +116,7 @@ object Either{
     * @return either a Left of E or a Right of B
     */
   def traverse[E, A, B](as: List[A])(f: A => Either[E, B]): Either[E, List[B]] =
-    as.foldRight(Right(Nil): Either[E, List[B]])((x,y) => map2(f(x), y)(_ :: _))
+    as.foldRight(Right(Nil): Either[E, List[B]])((x, y) => map2(f(x), y)(_ :: _))
 
   /**
     * Exercise 4.7

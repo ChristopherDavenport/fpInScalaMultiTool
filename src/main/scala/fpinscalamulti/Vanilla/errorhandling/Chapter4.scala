@@ -1,8 +1,4 @@
-package fpinscalamulti.Vanilla
-
-import fpinscalamulti.Some
-import fpinscalamulti.Option
-import fpinscalamulti.None
+package fpinscalamulti.Vanilla.errorhandling
 /**
   * Created by davenpcm on 7/4/16.
   */
@@ -16,7 +12,7 @@ object Chapter4 {
     * @param xs The sequence of dobules
     * @return An Option of a double of the variance if the sequence is longer than 0
     */
-  def variance(xs: Seq[Double]): Option[Double] =
+  def variance(xs: List[Double]): Option[Double] =
     if (xs.isEmpty) None
     else {
       val m = xs.sum/xs.length

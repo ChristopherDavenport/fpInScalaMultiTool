@@ -1,7 +1,7 @@
-package fpinscalamulti
+package fpinscalamulti.Vanilla.datastructures
 
 import org.scalatest.{FlatSpec, Matchers}
-import Tree._
+import fpinscalamulti.Vanilla.datastructures.Tree._
 /**
   * Created by davenpcm on 7/4/16.
   */

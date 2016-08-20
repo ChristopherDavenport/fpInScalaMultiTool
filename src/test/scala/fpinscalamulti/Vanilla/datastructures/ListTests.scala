@@ -124,6 +124,11 @@ class ListTests extends FlatSpec with Matchers{
     datastructures.List.length(l) should be (0)
   }
 
+  it should "return the length of the list when using the object" in {
+    val l = List(1,2,3,4,5)
+    List.length(l) should be (5)
+  }
+
   "sum" should "return the sum of a list" in {
     val l = datastructures.List(1,2,3,4,5)
     datastructures.List.sum(l) should be (15)

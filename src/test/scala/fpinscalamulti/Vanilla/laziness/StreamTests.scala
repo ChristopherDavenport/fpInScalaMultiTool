@@ -113,4 +113,14 @@ class StreamTests extends FlatSpec with Matchers {
     s.headOptionFoldR should be (Some(1))
   }
 
+  "isEmpty" should "return true when a stream is empty" in {
+    val s = Stream()
+    s.isEmpty should be (true)
+  }
+
+  it should "return false if it is not" in {
+    val s = Stream(1,2,3,4)
+    s.isEmpty should be (false)
+  }
+
 }

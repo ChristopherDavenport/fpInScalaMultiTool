@@ -303,4 +303,40 @@ class StreamTests extends FlatSpec with Matchers {
     s1.zipAll(s2).toList should be (r)
   }
 
+  "startsWith" should "return true for a shorter second sequence that starts the first sequence" in {
+    val s1 = Stream(1,2,3)
+    val s2 = Stream(1,2)
+    s1.startsWith(s2) should be (true)
+  }
+
+  it should "return false if the second is longer than the first" in {
+    val s1 = Stream(1,2,3)
+    val s2 = Stream(1,2,3,4,5)
+    s1.startsWith(s2) should be (false)
+  }
+
+  "tails" should "return the Stream of suffixes of the impute sequence starting with the original stream" in {
+    val s = Stream(1,2,3)
+
+    s.tails.mapUnfold(_.toList).toList should be (List(List(1,2,3), List(2,3), List(3), List()))
+  }
+
+  "hasSubsequence" should "return true when given a subsequence of the first stream" in {
+    val s1 = Stream(1,2,3,4,5)
+    val s2 = Stream(3,4)
+    s1.hasSubsequence(s2) should be (true)
+  }
+
+  it should "return false when it does not contain the subsequence" in {
+    val s1 = Stream(1,2,3,4,5)
+    val s2 = Stream(1,3,5)
+    s1.hasSubsequence(s2) should be (false)
+  }
+
+  "scanRight" should "return a stream of intermediate results" in {
+    val s = Stream(1,2,3)
+    s.scanRight(0)(_ + _).toList should be (List(6,5,3,0))
+  }
+
+
 }

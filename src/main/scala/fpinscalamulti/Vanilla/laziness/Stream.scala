@@ -121,8 +121,8 @@ trait Stream[+A] {
 
   /**
     * Exercise 5.5
-    * @param p
-    * @return
+    * @param p The predicate to take While
+    * @return A Stream consisting of Elements that match the predicate from the head of the stream.
     */
   def takeWhile(p: A => Boolean): Stream[A] = foldRight(Stream(): Stream[A]){
     (a, b) => if (p(a)) cons(a, b.takeWhile(p)) else empty
@@ -243,6 +243,8 @@ trait Stream[+A] {
   }
 
   /**
+    * Exercise 5.13
+    *
     * Simple if both lists have elements they are tupled, otherwise the stream is terminated.
     * @param that the Stream to zip with
     * @tparam B The type of the other stream
@@ -253,12 +255,69 @@ trait Stream[+A] {
     case _ => None
   }
 
+  /**
+    * Exercise 5.13
+    *
+    * This function combines the entirety of two streams.
+    * @param that The other stream
+    * @tparam B The type of the Other Stream
+    * @return As the entirety is returned all values are options as one list may terminate earlier than the other,
+    *         and all following values in the stream on that side will be none.
+    */
   def zipAll[B](that: Stream[B]): Stream[(Option[A], Option[B])] = Stream.unfold((this, that)){
     case (Cons(h1, t1), Cons(h2, t2)) => Option((Option(h1()), Option(h2())),(t1(), t2()))
     case (Cons(h1, t1), Empty) => Option((Option(h1()), None), (t1(), Empty))
     case (Empty, Cons(h2, t2)) => Option((None, Option(h2())), (Empty, t2()))
     case _ => None
   }
+
+
+  /**
+    * Exercise 5.14
+    *
+    * Checks Whether A Stream Starts with another Stream
+    * @param s The other stream
+    * @tparam B The type of the other stream, that must be a supertype of A
+    * @return A boolean whether or not it is true, the only result which I question which matches the author is that
+    *         empty always is true. Except the other element doesnt Start with Empty. So I have left it with the intent
+    *         of the author however a quick check of s would fix it.
+    */
+  def startsWith[B >: A](s: Stream[B]): Boolean  = {
+    zipAll(s).takeWhile(_._2.isDefined).forAll{ case (h1, h2) => h1 == h2}
+  }
+
+  /**
+    * Exercise 5.15
+    *
+    * Returns all the tails of this list so each stream as an element back from the first
+    * @return A stream of Streams
+    */
+  def tails: Stream[Stream[A]] = Stream.unfold(this){
+    case Cons(h, t) =>
+      Option(
+      (cons(h(), t()), t())
+    )
+    case Empty => None
+  }.append(Stream(empty))
+
+  /**
+    * Checks whether a given subsequence is in the stream.
+    * @param s The other stream
+    * @tparam B The type of the other stream which much by a supertype of A
+    * @return A boolean representing the presence lack of presence of the sequence.
+    */
+  def hasSubsequence[B >: A](s: Stream[B]): Boolean = tails.exists(_.startsWith(s))
+
+  /**
+    * Exercise 5.16
+    *
+    * Tails and foldRight combined. So we combined them to get the correct result
+    * @param z The Right Value
+    * @param f The transformation function
+    * @tparam B the result type
+    * @return A Stream of Type B containing all intermediate results
+    */
+  def scanRight[B](z: => B)(f: (A, => B) => B): Stream[B] = tails.mapUnfold(_.foldRight(z)(f))
 
 }
 

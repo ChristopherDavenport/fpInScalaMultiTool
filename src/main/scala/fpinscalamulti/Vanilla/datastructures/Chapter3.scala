@@ -1,4 +1,4 @@
-package fpinscalamulti.Vanilla
+package fpinscalamulti.Vanilla.datastructures
 
 /**
   * Created by davenpcm on 7/3/16.

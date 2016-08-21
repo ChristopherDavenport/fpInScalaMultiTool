@@ -1,4 +1,4 @@
-package fpinscalamulti
+package fpinscalamulti.Vanilla.errorhandling
 
 import org.scalatest.{FlatSpec, Matchers}
 /**

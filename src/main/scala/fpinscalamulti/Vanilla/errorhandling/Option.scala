@@ -1,4 +1,4 @@
-package fpinscalamulti
+package fpinscalamulti.Vanilla.errorhandling
 
 /**
   * Created by davenpcm on 7/5/16.
@@ -136,7 +136,7 @@ object Option{
     * @return An Option of a List of A
     */
   def sequence[A](a: List[Option[A]]): Option[List[A]] =
-    a.foldRight[Option[List[A]]](Some(Nil))((x,y) => map2(x, y)(_ :: _))
+    a.foldRight[Option[List[A]]](Some(Nil))((x, y) => map2(x, y)(_ :: _))
 
   /**
     * Exercise 4.5 Part 1 - Create a function which only looks at the list once and generate an option
@@ -152,7 +152,7 @@ object Option{
     * @return An Option of a List of B
     */
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] =
-    a.foldRight(Some(Nil): Option[List[B]])((x,y) => map2(f(x), y)(_ :: _))
+    a.foldRight(Some(Nil): Option[List[B]])((x, y) => map2(f(x), y)(_ :: _))
 
   /**
     * Exercise 4.5 Part 2 - Reimplement sequence via traverse

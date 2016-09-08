@@ -5,7 +5,7 @@ import scala.annotation.tailrec
 /**
   * Created by davenpcm on 7/2/16.
   */
-object Chapter2 extends App{
+object Chapter2 {
 
   /**
     * Exercise 2.1 - Use tail recursion to generate

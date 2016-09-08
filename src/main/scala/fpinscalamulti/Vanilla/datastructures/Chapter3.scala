@@ -3,7 +3,7 @@ package fpinscalamulti.Vanilla.datastructures
 /**
   * Created by davenpcm on 7/3/16.
   */
-object Chapter3 extends App{
+object Chapter3{
 
   /**
     * Exercise 3.1 - The Result will be 3 As List(1,2,3,4,5) expands to

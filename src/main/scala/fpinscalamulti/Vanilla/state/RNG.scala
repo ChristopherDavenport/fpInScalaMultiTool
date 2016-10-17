@@ -76,27 +76,83 @@ object RNG {
     loop(count, rng, List[Int]())
   }
 
+  /**
+    * Randomly Generated A. State Action where the program depends on some RNG,
+    * uses it to generate an A, and transitions to RNG to a new state that
+    * can be used later by another action
+    * @tparam A Any
+    */
   type Rand[+A] = RNG => (A, RNG)
 
+
+  /**
+    * Unit passes the rng along withouth using it always returning a constant
+    * value rather than a random value
+    * @param a The constant to pass
+    * @tparam A The type of the constant
+    * @return a new Rand of the type
+    */
   def unit[A](a: A): Rand[A] = rng => (a, rng)
 
+  /**
+    * Map does not modify the state of the rng but does modify the given A that is
+    * contained within the RNG. Simply that we transform the variable without transforming
+    * the RNG state.
+    *
+    * Important to not that s(rng) is merely applying the given rng to get the result type.
+    * @param s The given Rand
+    * @param f The function to transform the internal type
+    * @tparam A The starting type of the Rand
+    * @tparam B The finishing type of the Rand
+    * @return A new Rand with the internal value transformed but not
+    *         the state of the RNG
+    */
   def map[A,B](s: Rand[A])(f: A => B): Rand[B] = rng => {
     val (a, rng2) = s(rng)
     (f(a), rng2)
   }
 
+  /**
+    * Implementation gives us  a non Negative Even Random number
+    * @return A Rand which only needs a RNG applied to get the desired value type
+    */
   def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
-  // Exercise 6.5
+  /**
+    * Exercise 6.5
+    * This simple Maps Over the set of nonNegativeInts and creates a double of the value
+    * between zero and 1 based on its distance between the value to double and the max int value
+    * @return a Rand of Dobule
+    */
   def _double: Rand[Double] = map(nonNegativeInt)(i => i.toDouble / Int.MaxValue.toDouble)
 
   // Exercise 6.6
+  /**
+    * Exercise 6.6 -
+    * This function combines two actions and combines their result into another random
+    * action that combines the two
+    * @param ra The first action of type A
+    * @param rb The second actio if type B
+    * @param f The combination function
+    * @tparam A Type of First Action
+    * @tparam B Type of Second Action
+    * @tparam C Result Type
+    * @return A function of Rand C
+    */
   def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = rng => {
     val (a, r1) = ra(rng)
     val (b, r2) = rb(r1)
     (f(a,b), r2)
   }
 
+  /**
+    * Pair to combine
+    * @param ra First Action
+    * @param rb Second Action
+    * @tparam A Type of first Action
+    * @tparam B Type of Second Action
+    * @return Tuple of Action results
+    */
   def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] =
     map2(ra, rb)((_, _))
 
@@ -104,10 +160,28 @@ object RNG {
 
   def randDoubleInt: Rand[(Double, Int)] = both(double, int)
 
-  // Exercise 6.7
+  /**
+    * Exercise 6.7
+    * Since this now operates as monoid in that it is a semigroup with a zero value.
+    * The zero in an RNG of an empty list and we can foldLeft over the list by mapping
+    * the generated values and applying them in sequential order through each element of
+    * the list or doing nothing. So we build the Lieft from a list of A passed with the rng
+    * to the next value and then continue passing the newly generated value as we build the whole
+    * list, then as we have build the list in reverse we reverse it to get the original list
+    * expected
+    * @param fs The list of Rands
+    * @tparam A the type of Randoms generated
+    * @return A Rand of List of A
+    */
   def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
-    val a = fs.foldLeft(RNG.unit(List[A]()))((acc, f) => map2(f, acc)(_ :: _))
-    map(a)(_.reverse)
+    val a = fs.foldLeft(RNG.unit(List[A]()))((acc, f) => _map2(f, acc)(_ :: _))
+    _map(a)(_.reverse)
+  }
+
+  def _int : Rand[Int] = rng => rng.nextInt
+
+  def _ints(count: Int): Rand[List[Int]] = {
+    sequence(List.fill(count)(_int))
   }
 
   /**
@@ -162,9 +236,13 @@ object RNG {
     * @tparam C The type of the return Rand
     * @return A Rand of Type C
     */
-  def _map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = flatMap(ra){a => map(rb){ b => f(a,b)}}
+  def _map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = flatMap(ra){a => _map(rb){ b => f(a,b)}}
 
-
+  /**
+    * Generates a random number between 1 and 6
+    * @return A random number between 1 and 6
+    */
+  def rollDie: Rand[Int] = map(nonNegativeLessThan(6))(_ + 1)
 
 }
 
